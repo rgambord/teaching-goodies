@@ -1,0 +1,28 @@
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+[[ $DISPLAY ]] && shopt -s checkwinsize
+
+# Set a fancy prompt
+PS1='\n\e[38;5;244m\u\e[0m@\e[38;5;252m\h \e[38;5;203m \w\e[0m \n$'
+
+# Make ls default to use colors in an interactive environment
+alias ls='ls --color=auto'
+
+case ${TERM} in
+  xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
+    ;;
+esac
+
+[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
+
+# make cd ignore files with tab-completion
+complete -d cd rmdir pushd
+
+# Cluster environment settings - only on systems with hpc in name
+if [ `/bin/hostname | /bin/awk -F. '{print $2}' | tr "[a-z]" "[A-Z]"` == "HPC" ]; then
+    . /scratch/a1/sge/settings-mpich3i.sh
+fi
+
+export EDITOR=vim

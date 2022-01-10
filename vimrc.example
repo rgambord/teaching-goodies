@@ -1,0 +1,123 @@
+" set the runtime path to include Vundle and initialize
+exe 'set rtp ^='.expand('$HOME/.local/share/vim/bundle/Vundle.vim')
+call vundle#begin(expand('$HOME/.local/share/vim/bundle/'))
+
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-vinegar'
+Plugin 'scrooloose/nerdtree'
+Plugin 'vim-airline/vim-airline'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'godlygeek/tabular'
+Plugin 'yggdroot/indentline'
+Plugin 'ericcurtin/CurtineIncSw.vim'
+
+call vundle#end()
+
+
+" Options from :options
+  " 1 important
+  set cpoptions+=n " list of flags to specify Vi compatibility
+
+  " 2 moving around, searching and patterns
+  set whichwrap+=<,>,[,] " list of flags specifying which commands wrap to another line
+  set incsearch " show match for partly typed search command
+
+  " 4 displaying text
+  set scrolloff=1 " number of screen lines to show around the cursor
+  set linebreak " wrap long lines at a character in 'breakat'
+  "set breakindent " Preserve indentation in wrapped text  """ Not present in
+  "this version of vim!
+  set showbreak=>\  " String to put before wrapped screen lines
+  set sidescrolloff=1 " minimal number of columns to keep left and right of the cursor
+  set number " show the line number for each line
+
+  " 5 syntax, highlighting and spelling
+  set hlsearch " highlight all matches for the last used search pattern
+  set cursorline " highlight the screen line of the cursor
+
+  " 6 multiple windows
+  set splitright
+  set splitbelow
+
+  " 9 using the mouse
+  set mouse=a " list of flags for using the mouse
+
+  " 12 messages and info
+  set ruler " show cursor position below each window
+
+  " 14 editing text
+  set undofile " automatically save and restore undo history
+  set textwidth=0
+  set backspace=indent,eol,start " specifies what <BS>, CTRL-W, etc. can do in Insert mode
+
+  " 15 tabs and indenting
+  set ts=2 " number of spaces a <Tab> in the text stands for
+  set shiftwidth=0 " number of spaces used for each step of (auto)indent
+  set shiftround " round to 'shiftwidth' for "<<" and ">>"
+  set expandtab " expand <Tab> to spaces in Insert mode
+  set autoindent " automatically set the indent of a new line
+
+  " 19 reading and writing files
+  set backup " keep a backup after overwriting a file
+  silent !mkdir -p ~/.cache/vim/backup/
+  set backupdir=~/.cache/vim/backup/ 
+
+  " 22 executing external commands
+  set keywordprg=:Man
+
+
+" Enable filetype detection, and filetype specific plugins + indents
+filetype plugin indent on
+
+" Enable syntax highlighting
+syntax enable
+
+:colorscheme peachpuff
+:hi CursorLine cterm=NONE cterm=bold ctermbg=NONE
+:hi CursorLineNr cterm=NONE cterm=bold ctermbg=NONE
+
+" Indentline settings
+let g:indentLine_char='▏'
+
+" Enable internal man page viewer
+runtime! ftplugin/man.vim
+
+" disable ycm confirmation for local config file, and disable loading config
+" outside of ~/dev
+let g:ycm_confirm_extra_conf=0
+let g:ycm_extra_conf_globlist = ['~/dev/*','!~/*']
+
+" write with sudo
+ca w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+ca wq!! execute 'silent! write !sudo tee % >/dev/null' <bar> q!
+
+" Set up vertical vs block cursor for insert/normal mode
+if &term =~ "screen."
+  let &t_ti.="\eP\e[1 q\e\\"
+  let &t_SI.="\eP\e[5 q\e\\"
+  let &t_EI.="\eP\e[1 q\e\\"
+  let &t_te.="\eP\e[0 q\e\\"
+else
+  let &t_ti.="\<Esc>[1 q"
+  let &t_SI.="\<Esc>[5 q"
+  let &t_EI.="\<Esc>[1 q"
+  let &t_te.="\<Esc>[0 q"
+endif
+
+"let &t_SI='[6 q'
+"let &t_SR='[4 q'
+"let &t_EI='[2 q'
+
+" optional reset cursor on start:
+augroup myCmds
+au!
+autocmd VimEnter * silent !echo -ne "\e[2 q"
+augroup END
+
+autocmd FileType man setlocal sw=2 ts=8 noet
+
+" Keymap for CurtineIncSw (switch between .h and .c)
+map <F5> :call CurtineIncSw()<CR>

@@ -4,7 +4,7 @@ This repository contains a script to install the latest version of vim to your h
 
 # Install
 
-$ git clone --recurse-subdirectories https://github.com/rgambord/teaching-goodies.git
+$ git clone --recurse-submodules https://github.com/rgambord/teaching-goodies.git
 
 $ cd teaching-goodies
 
